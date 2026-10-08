@@ -1,0 +1,57 @@
+---
+import { site } from "@/config/site";
+
+interface Props {
+	pageUrl: string;
+	title: string;
+	description?: string;
+	image?: string | null;
+	date?: Date | string;
+	author?: string;
+}
+
+const { pageUrl, title, description, image, date, author } = Astro.props;
+const isoDate = date ? new Date(date).toISOString() : undefined;
+
+const data = {
+	"@context": "https://schema.org",
+	"@type": "Article",
+	mainEntityOfPage: {
+		"@type": "WebPage",
+		"@id": `${site.domain}${pageUrl}`,
+	},
+	headline: title,
+	...(description ? { description } : {}),
+	...(image
+		? {
+				image: {
+					"@type": "ImageObject",
+					url: image.startsWith("http") ? image : `${site.domain}${image}`,
+					width: 1200,
+					height: 630,
+				},
+			}
+		: {}),
+	...(isoDate ? { datePublished: isoDate, dateModified: isoDate } : {}),
+	...(author
+		? {
+				author: {
+					"@type": "Person",
+					name: author,
+				},
+			}
+		: {}),
+	publisher: {
+		"@type": "Organization",
+		name: site.name,
+		logo: {
+			"@type": "ImageObject",
+			url: `${site.domain}/assets/svgs/senoweb-logo-black.svg`,
+			width: 210,
+			height: 28,
+		},
+	},
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

@@ -1,0 +1,13 @@
+---
+description: Astro + Content Collections conventions
+globs: src/**/*.{astro,ts,md}
+alwaysApply: false
+---
+# Astro Conventions
+
+- Pages live in `src/pages/`. Content data lives in Content Collections (`src/content/`).
+- Site-wide identity → `src/config/site.ts`. Navigation → `src/components/Header/navigation.ts`.
+- Chrome copy → `t(locale, group, key)` from `src/i18n/ui.ts` (nested groups: `nav`, `form`, …).
+- Use `BaseLayout` for SEO meta, canonical, OG, Starwind `ThemeInitScript`.
+- Blog posts route to `/aktuality/[slug]/` from the `url` frontmatter field.
+- Sveltia edits `src/content/blog/cs/` — keep `locale: cs` on posts.

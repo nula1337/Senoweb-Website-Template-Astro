@@ -1,0 +1,30 @@
+---
+import { site } from "@/config/site";
+
+interface Props {
+	pageUrl: string;
+	image?: string | null;
+}
+
+const { pageUrl, image } = Astro.props;
+const socials = Object.values(site.socials);
+
+const data = {
+	"@context": "https://schema.org",
+	"@type": "LocalBusiness",
+	name: site.name,
+	...(image ? { image: `${site.domain}${image}` } : {}),
+	...(site.phoneFormatted ? { telephone: site.phoneFormatted } : {}),
+	...(site.email ? { email: site.email } : {}),
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: site.address.lineOne,
+		addressLocality: site.address.city,
+		postalCode: site.address.zip,
+	},
+	url: `${site.domain}${pageUrl}`,
+	sameAs: socials,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

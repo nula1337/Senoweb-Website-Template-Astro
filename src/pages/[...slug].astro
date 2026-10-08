@@ -1,0 +1,119 @@
+---
+import { render } from "astro:content";
+
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+import { Textarea } from "@/components/starwind/textarea";
+import Landing from "@/components/Landing.astro";
+import { defaultLocale } from "@/i18n/locales";
+import { t } from "@/i18n/ui";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getPages } from "@/lib/content";
+
+export async function getStaticPaths() {
+	const pages = await getPages(defaultLocale);
+	return pages
+		.filter((page) => page.data.permalink !== "")
+		.map((page) => ({
+			params: { slug: page.data.permalink },
+			props: { page },
+		}));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const { title, description, landing, form, gdpr } = page.data;
+---
+
+<BaseLayout title={title} description={description} locale={defaultLocale}>
+	{landing && <Landing heading={landing.heading} breadcrumbs={landing.breadcrumbs} />}
+
+	{
+		form ? (
+			<section class="px-fluid-4-8 py-fluid-16-24">
+				<div class="container m-auto max-w-2xl">
+					<form
+						class="flex flex-col gap-8"
+						method="POST"
+						action="/dekujeme/"
+						name={form.name}
+						data-netlify="true"
+						netlify-honeypot="company"
+					>
+						<input type="hidden" name="form-name" value={form.name} />
+						<input
+							class="sr-only"
+							type="search"
+							name="company"
+							tabindex={-1}
+							autocomplete="off"
+							spellcheck="false"
+							placeholder="Leave this empty"
+						/>
+
+						{form.fields.map((field) => (
+							<div class="flex flex-col gap-2.5">
+								<Label>
+									{field.name}
+									{field.type === "textarea" ? (
+										<Textarea
+											class="mt-2.5"
+											name={field.name}
+											rows={5}
+											required={field.required}
+											placeholder={field.placeholder}
+										/>
+									) : (
+										<Input
+											class="mt-2.5"
+											type={field.type}
+											name={field.name}
+											autocomplete={field.autocomplete}
+											required={field.required}
+											placeholder={field.placeholder}
+										/>
+									)}
+								</Label>
+							</div>
+						))}
+
+						<div class="flex flex-col gap-4">
+							<Button type="submit">{form.submit}</Button>
+							<p class="text-center text-muted-foreground">
+								{t(defaultLocale, "form", "gdpr")}{" "}
+								<a class="underline hover:text-foreground" href="/gdpr/" target="_blank" rel="noopener noreferrer">
+									{t(defaultLocale, "form", "gdprLink")}
+								</a>
+							</p>
+						</div>
+					</form>
+				</div>
+			</section>
+		) : gdpr ? (
+			<section class="px-fluid-4-8 py-fluid-16-24">
+				<div class="container m-auto flex max-w-3xl flex-col gap-8">
+					{gdpr.items.map((item) => (
+						<div class="flex flex-col gap-3">
+							{item.heading && <h2 class="text-fluid-lg-2xl font-semibold">{item.heading}</h2>}
+							<p class="text-muted-foreground">{item.text}</p>
+							{item.subitems && (
+								<ul class="list-disc space-y-2 pl-6 text-muted-foreground">
+									{item.subitems.map((sub) => (
+										<li>{sub.text}</li>
+									))}
+								</ul>
+							)}
+						</div>
+					))}
+				</div>
+			</section>
+		) : (
+			<section class="px-fluid-4-8 py-fluid-16-24">
+				<div class="prose prose-neutral dark:prose-invert container m-auto">
+					<Content />
+				</div>
+			</section>
+		)
+	}
+</BaseLayout>

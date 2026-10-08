@@ -1,0 +1,219 @@
+---
+import Menu from "@tabler/icons/outline/menu-2.svg";
+
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/starwind/accordion";
+import { Button } from "@/components/starwind/button";
+import {
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle,
+} from "@/components/starwind/navigation-menu";
+import {
+	Sheet,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/starwind/sheet";
+import { ThemeToggle } from "@/components/starwind/theme-toggle";
+import { defaultLocale, type Locale } from "@/i18n/locales";
+import { t } from "@/i18n/ui";
+import { getNav } from "./navigation";
+
+interface Props {
+	locale?: Locale;
+	currentPath?: string;
+}
+
+const locale = Astro.props.locale ?? (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const currentPath = Astro.props.currentPath ?? Astro.url.pathname;
+const items = getNav(locale);
+
+function isCurrent(url: string): boolean {
+	const normalized = currentPath.endsWith("/") ? currentPath : `${currentPath}/`;
+	const target = url.endsWith("/") ? url : `${url}/`;
+	return normalized === target || (url === "/" && (currentPath === "/" || currentPath === ""));
+}
+
+function itemValue(url: string): string {
+	return url.replace(/^\/+|\/+$/g, "") || "home";
+}
+---
+
+<header class="fixed z-50 w-full bg-background/80 px-fluid-4-8 py-4 backdrop-blur-md">
+	<div class="container m-auto flex items-center justify-between gap-4">
+		<!-- LOGO -->
+		<div class="flex flex-1">
+			<a href="/">
+				<span class="sr-only">{t(locale, "nav", "homeAria")}</span>
+				<img
+					class="hidden h-6 w-auto dark:block"
+					src="/assets/svgs/senoweb-logo-white.svg"
+					alt="Senoweb logo"
+					width="120"
+					height="24"
+					loading="eager"
+				/>
+				<img
+					class="block h-6 w-auto dark:hidden"
+					src="/assets/svgs/senoweb-logo-black.svg"
+					alt="Senoweb logo"
+					width="120"
+					height="24"
+					loading="eager"
+				/>
+			</a>
+		</div>
+
+		<!-- DESKTOP NAV -->
+		<NavigationMenu class="hidden lg:flex" size="sm" aria-label={t(locale, "nav", "label")}>
+			<NavigationMenuList>
+				{
+					items.map((item) => {
+						const hasChild = Boolean(item.subitems?.length);
+
+						if (hasChild) {
+							return (
+								<NavigationMenuItem value={itemValue(item.url)}>
+									<NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+									<NavigationMenuContent>
+										<ul class="grid w-56 gap-1">
+											{item.subitems?.map((subitem) => (
+												<li>
+													<NavigationMenuLink href={subitem.url} active={isCurrent(subitem.url)}>
+														{subitem.title}
+													</NavigationMenuLink>
+												</li>
+											))}
+										</ul>
+									</NavigationMenuContent>
+								</NavigationMenuItem>
+							);
+						}
+
+						return (
+							<NavigationMenuItem>
+								<NavigationMenuLink
+									href={item.url}
+									active={isCurrent(item.url)}
+									class={navigationMenuTriggerStyle()}
+								>
+									{item.title}
+								</NavigationMenuLink>
+							</NavigationMenuItem>
+						);
+					})
+				}
+			</NavigationMenuList>
+		</NavigationMenu>
+
+		<!-- ACTIONS -->
+		<div class="flex items-center gap-2 lg:gap-4">
+			<ThemeToggle ariaLabel={t(locale, "theme", "toggle")} size="sm" variant="outline" />
+			<Button as="a" href="/kontakt/" variant="primary" class="max-lg:hidden">
+				{t(locale, "nav", "cta")}
+			</Button>
+
+			<!-- MOBILE NAV -->
+			<Sheet class="lg:hidden">
+				<SheetTrigger asChild>
+					<Button variant="outline" size="icon-sm" aria-label={t(locale, "nav", "toggle")}>
+						<Menu />
+					</Button>
+				</SheetTrigger>
+
+				<SheetContent side="right" class="flex flex-col gap-6">
+					<SheetHeader>
+						<SheetTitle>{t(locale, "nav", "menu")}</SheetTitle>
+					</SheetHeader>
+
+					<nav class="flex flex-col gap-2 px-4" aria-label={t(locale, "nav", "label")}>
+						{
+							items.map((item) => {
+								const hasChild = Boolean(item.subitems?.length);
+
+								if (hasChild) {
+									return (
+										<Accordion type="single" collapsible>
+											<AccordionItem value={itemValue(item.url)}>
+												<AccordionTrigger>{item.title}</AccordionTrigger>
+												<AccordionContent>
+													<ul class="flex flex-col gap-1 pb-2">
+														<li>
+															<a
+																class:list={[
+																	"block rounded-md px-3 py-2 text-sm",
+																	isCurrent(item.url)
+																		? "bg-muted font-medium"
+																		: "text-muted-foreground hover:bg-muted hover:text-foreground",
+																]}
+																href={item.url}
+																aria-current={isCurrent(item.url) ? "page" : undefined}
+																data-sw-drawer-close
+															>
+																{item.title}
+															</a>
+														</li>
+														{item.subitems?.map((subitem) => (
+															<li>
+																<a
+																	class:list={[
+																		"block rounded-md px-3 py-2 text-sm",
+																		isCurrent(subitem.url)
+																			? "bg-muted font-medium"
+																			: "text-muted-foreground hover:bg-muted hover:text-foreground",
+																	]}
+																	href={subitem.url}
+																	aria-current={isCurrent(subitem.url) ? "page" : undefined}
+																	data-sw-drawer-close
+																>
+																	{subitem.title}
+																</a>
+															</li>
+														))}
+													</ul>
+												</AccordionContent>
+											</AccordionItem>
+										</Accordion>
+									);
+								}
+
+								return (
+									<a
+										class:list={[
+											"rounded-md px-3 py-2 text-sm font-medium",
+											isCurrent(item.url)
+												? "bg-muted"
+												: "text-muted-foreground hover:bg-muted hover:text-foreground",
+										]}
+										href={item.url}
+										aria-current={isCurrent(item.url) ? "page" : undefined}
+										data-sw-drawer-close
+									>
+										{item.title}
+									</a>
+								);
+							})
+						}
+					</nav>
+
+					<SheetFooter>
+						<Button as="a" href="/kontakt/" variant="primary" data-sw-drawer-close>
+							{t(locale, "nav", "cta")}
+						</Button>
+					</SheetFooter>
+				</SheetContent>
+			</Sheet>
+		</div>
+	</div>
+</header>

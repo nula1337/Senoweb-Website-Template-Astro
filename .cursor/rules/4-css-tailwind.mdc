@@ -1,0 +1,12 @@
+---
+description: Protect fluid Tailwind tokens and CSS file ownership
+globs: src/styles/**/*.css
+alwaysApply: false
+---
+# CSS & Tailwind Standards
+
+- **`src/styles/starwind.css`**: Starwind theme tokens only (brand `--primary` overrides OK).
+- **`src/styles/global.css`**: App entry — imports Starwind, fluid tokens, fonts, nav/FAQ project styles.
+- Do not overwrite `--fluid-min-width` or `--fluid-max-width` unless specifically requested.
+- Maintain existing `--fluid-bp` calculations for responsive scaling.
+- Layout imports **only** `global.css`.

@@ -1,0 +1,99 @@
+---
+import { ThemeInitScript } from "@starwind-ui/astro/theme";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header/Header.astro";
+import { site } from "@/config/site";
+import { defaultLocale, locales, type Locale } from "@/i18n/locales";
+import { t } from "@/i18n/ui";
+import "@/styles/global.css";
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	noindex?: boolean;
+	locale?: Locale;
+}
+
+const {
+	title,
+	description,
+	image = "/assets/images/og-logo.png",
+	noindex = false,
+	locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.domain).href;
+const ogImage = image.startsWith("http") ? image : `${site.domain}${image}`;
+const pageTitle = `${title} | ${site.name}`;
+const isHome = Astro.url.pathname === "/" || Astro.url.pathname === `/${locale}/`;
+---
+
+<!doctype html>
+<html class="scroll-smooth" lang={locale}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
+		<link rel="canonical" href={canonical} />
+
+		{
+			locales.length > 1 &&
+				locales.map((lang) => (
+					<link
+						rel="alternate"
+						hreflang={lang}
+						href={new URL(getRelativeLocaleUrl(lang, Astro.url.pathname), site.domain).href}
+					/>
+				))
+		}
+		{
+			locales.length > 1 && (
+				<link
+					rel="alternate"
+					hreflang="x-default"
+					href={new URL(getRelativeLocaleUrl(defaultLocale, Astro.url.pathname), site.domain).href}
+				/>
+			)
+		}
+
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:secure_url" content={ogImage} />
+		<meta property="og:locale" content="cs_CZ" />
+
+		<link rel="icon" type="image/png" href="/assets/favicons/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+		<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-touch-icon.png" />
+		<meta name="apple-mobile-web-app-title" content={site.name} />
+		<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+		<link rel="preload" as="image" href="/assets/svgs/senoweb-logo-black.svg" />
+		<link rel="preload" as="image" href="/assets/svgs/senoweb-logo-white.svg" />
+		<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/raleway-latin.woff2" crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/raleway-latin-ext.woff2" crossorigin />
+
+		<ThemeInitScript />
+		<slot name="head" />
+
+		<title>{pageTitle}</title>
+	</head>
+	<body class:list={["group/body font-sans", isHome ? "home" : "interior"]}>
+		<a class="sr-only focus:not-sr-only" href="#main">{t(locale, "skip", "link")}</a>
+		<Header locale={locale} currentPath={Astro.url.pathname} />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer locale={locale} />
+		<slot name="scripts" />
+	</body>
+</html>

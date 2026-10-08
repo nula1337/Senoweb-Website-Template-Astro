@@ -1,0 +1,68 @@
+---
+import { render } from "astro:content";
+
+import Landing from "@/components/Landing.astro";
+import OptimizedImage from "@/components/OptimizedImage.astro";
+import SeoSchemaArticle from "@/components/SeoSchemaArticle.astro";
+import { defaultLocale } from "@/i18n/locales";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { formatPostDate, getBlogPosts } from "@/lib/content";
+
+export async function getStaticPaths() {
+	const posts = await getBlogPosts(defaultLocale);
+	return posts.map((post) => ({
+		params: { slug: post.data.url },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, author, date, image } = post.data;
+const pageUrl = `/aktuality/${post.data.url}/`;
+---
+
+<BaseLayout title={title} description={description} image={image.url} locale={defaultLocale}>
+	<SeoSchemaArticle
+		slot="head"
+		pageUrl={pageUrl}
+		title={title}
+		description={description}
+		image={image.url}
+		date={date}
+		author={author}
+	/>
+
+	<Landing
+		heading={title}
+		breadcrumbs={[
+			{ title: "Domů", url: "/" },
+			{ title: "Aktuality", url: "/aktuality/" },
+			{ title },
+		]}
+	/>
+
+	<article class="bg-background px-fluid-4-8 py-fluid-16-24">
+		<div class="container m-auto flex max-w-4xl flex-col items-center gap-8">
+			<OptimizedImage
+				src={image.url}
+				alt={image.alt}
+				class="aspect-3/2 w-full rounded-2xl border border-border object-cover"
+			/>
+
+			<section class="flex w-full max-w-[75ch] flex-col gap-8">
+				<div class="flex flex-col gap-2">
+					<h1 class="text-fluid-2xl-5xl">{title}</h1>
+					<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+						<span>{author}</span>
+						<span aria-hidden="true">·</span>
+						<time datetime={date.toISOString()}>{formatPostDate(date, defaultLocale)}</time>
+					</div>
+				</div>
+				<div class="prose prose-neutral dark:prose-invert">
+					<Content />
+				</div>
+			</section>
+		</div>
+	</article>
+</BaseLayout>

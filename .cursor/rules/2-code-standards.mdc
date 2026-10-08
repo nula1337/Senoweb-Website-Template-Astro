@@ -1,0 +1,43 @@
+---
+description: Global code standards, scope guardrails, layout patterns, and style rules
+globs: *
+alwaysApply: true
+---
+# Global Code Standards & Behavior Rules
+
+## Language
+- Primary language for site content and UI copy is **Czech** (unless requested otherwise).
+
+## Execution & Scope Guardrails
+1. **Targeted Scope**: Make minimal surgical changes. When asked to create a section/component, generate complete markup without truncating.
+2. **Match Existing Patterns**: Scan `src/` and reuse Content Collections, `site.ts`, Header nav, and section patterns.
+
+## Layout & Spacing Architecture
+- **Flexbox & Gaps over Margins**: Prefer flex/grid + `gap-*` / `gap-fluid-*`. Avoid `mt-*` / `mb-*` on siblings.
+- **Section Containers**: `.container.m-auto` with flex column layouts.
+
+### Canonical Section Pattern
+```html
+<section class="py-fluid-16-24 px-fluid-4-8">
+  <div class="container m-auto flex flex-col gap-fluid-4-8">
+    <hgroup class="flex flex-col gap-fluid-2-4">
+      <span class="topper">Kategorie</span>
+      <h2 class="text-fluid-2xl-5xl font-bold">Nadpis</h2>
+    </hgroup>
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-fluid-4-8">
+      <li class="flex flex-col gap-fluid-2-4">
+        <!-- Use OptimizedImage for raster assets -->
+        <h3 class="text-fluid-lg-2xl font-semibold">Položka</h3>
+      </li>
+    </ul>
+  </div>
+</section>
+```
+
+## Images
+- Prefer `OptimizedImage` from `src/components/OptimizedImage.astro` with a meaningful `sizes` attribute.
+- Import local images from `src/assets/` so Astro can optimize them.
+
+## CSS & Tailwind Rules
+- **No arbitrary pixel values** in Tailwind classes. Use fluid tokens from `global.css`.
+- Do not put project CSS into `starwind.css` — keep it theme-only.

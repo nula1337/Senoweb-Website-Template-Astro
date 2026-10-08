@@ -74,18 +74,20 @@
 }
 
 :root {
+  --primary: #e11d48;
+  --primary-foreground: var(--color-neutral-50);
+  --primary-accent: #be123c;
+
+  --secondary: var(--color-neutral-200);
+  --secondary-foreground: var(--color-neutral-950);
+  --secondary-accent: var(--color-neutral-950);
+
   --background: var(--color-white);
   --foreground: var(--color-neutral-950);
   --card: var(--color-white);
   --card-foreground: var(--color-neutral-950);
   --popover: var(--color-white);
   --popover-foreground: var(--color-neutral-950);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-700);
-  --secondary: var(--color-neutral-200);
-  --secondary-foreground: var(--color-neutral-950);
-  --secondary-accent: var(--color-neutral-950);
   --muted: var(--color-neutral-100);
   --muted-foreground: var(--color-neutral-600);
   --accent: var(--color-neutral-100);
@@ -106,7 +108,7 @@
   /* sidebar variables */
   --sidebar-background: var(--color-neutral-50);
   --sidebar-foreground: var(--color-neutral-950);
-  --sidebar-primary: var(--color-blue-700);
+  --sidebar-primary: #e11d48;
   --sidebar-primary-foreground: var(--color-neutral-50);
   --sidebar-accent: var(--color-neutral-100);
   --sidebar-accent-foreground: var(--color-neutral-900);
@@ -115,18 +117,20 @@
 }
 
 .dark {
+  --primary: #e11d48;
+  --primary-foreground: var(--color-neutral-50);
+  --primary-accent: #fb7185;
+
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-neutral-50);
+  --secondary-accent: var(--color-neutral-50);
+  
   --background: var(--color-neutral-950);
   --foreground: var(--color-neutral-50);
   --card: var(--color-neutral-900);
   --card-foreground: var(--color-neutral-50);
   --popover: var(--color-neutral-900);
   --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-400);
-  --secondary: var(--color-neutral-800);
-  --secondary-foreground: var(--color-neutral-50);
-  --secondary-accent: var(--color-neutral-50);
   --muted: var(--color-neutral-800);
   --muted-foreground: var(--color-neutral-400);
   --accent: var(--color-neutral-700);
@@ -146,7 +150,7 @@
   /* sidebars variables */
   --sidebar-background: var(--color-neutral-900);
   --sidebar-foreground: var(--color-neutral-50);
-  --sidebar-primary: var(--color-blue-700);
+  --sidebar-primary: #e11d48;
   --sidebar-primary-foreground: var(--color-neutral-50);
   --sidebar-accent: var(--color-neutral-800);
   --sidebar-accent-foreground: var(--color-neutral-100);

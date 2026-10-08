@@ -1,0 +1,31 @@
+---
+description: Project stack, architecture, and constraints for Solo Astro projects (Netlify + Sveltia)
+globs: *
+alwaysApply: true
+---
+# Senoweb Astro Template Context (Solo / Netlify)
+
+## Tech Stack
+- **Framework**: Astro SSG (`.astro` components, Content Collections).
+- **CSS**: Tailwind CSS v4 via Vite. Theme tokens in `src/styles/starwind.css`. Project styles (fluid, fonts, nav) in `src/styles/global.css` (imports Starwind).
+- **UI**: Starwind UI primitives in `src/components/starwind/`. Dark mode via `ThemeInitScript` + `ThemeToggle`.
+- **Hosting**: Netlify (`netlify.toml` → `dist`).
+- **CMS**: Sveltia CMS at `/admin/` (`public/admin/`), GitHub backend — **not** Decap, **not** Netlify Identity / Git Gateway.
+- **Forms**: Netlify Forms on the contact page.
+- **Images**: `OptimizedImage.astro` wrapping `astro:assets` `<Picture>` (avif/webp, widths 600–2880).
+
+## Key Paths
+- Site identity: `src/config/site.ts`
+- Navigation: `src/components/Header/navigation.ts` + `getNav(locale)`
+- UI strings: `src/i18n/ui.ts` + `src/i18n/locales.ts`
+- Content: `src/content/pages/{locale}/`, `src/content/blog/{locale}/`
+- Layout: `src/layouts/BaseLayout.astro`
+- CMS config: `public/admin/config.yml`
+
+## i18n
+- Default locale `cs`, `prefixDefaultLocale: false`.
+- To add a locale: extend `locales` in `src/i18n/locales.ts` + `astro.config.mjs`, add content folders, nav/ui keys.
+
+## Workflow
+- Dev: `npm run dev`
+- Build: `npm run build` (output `dist/` only — never edit generated files)
