@@ -1,5 +1,6 @@
 ---
 import { ThemeInitScript } from "@starwind-ui/astro/theme";
+import { Font } from "astro:assets";
 import { getRelativeLocaleUrl } from "astro:i18n";
 
 import Footer from "@/components/Footer.astro";
@@ -79,9 +80,9 @@ const isHome = Astro.url.pathname === "/" || Astro.url.pathname === `/${locale}/
 
 		<link rel="preload" as="image" href="/assets/svgs/senoweb-logo-black.svg" />
 		<link rel="preload" as="image" href="/assets/svgs/senoweb-logo-white.svg" />
-		<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/raleway-latin.woff2" crossorigin />
-		<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/raleway-latin-ext.woff2" crossorigin />
 
+		<Font cssVariable="--font-barlow" preload />
+		<Font cssVariable="--font-heading" preload />
 		<ThemeInitScript />
 		<slot name="head" />
 
