@@ -4,12 +4,15 @@ import { render } from "astro:content";
 import Landing from "@/components/Landing.astro";
 import OptimizedImage from "@/components/OptimizedImage.astro";
 import SeoSchemaArticle from "@/components/SeoSchemaArticle.astro";
-import { defaultLocale } from "@/i18n/locales";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { formatPostDate, getBlogPosts } from "@/lib/content";
+
+import { defaultLocale } from "@/i18n/locales";
+
+import { getBlogPosts } from "@/lib/content";
+import { formatPostDate } from "@/lib/utils";
 
 export async function getStaticPaths() {
-	const posts = await getBlogPosts(defaultLocale);
+	const posts = await getBlogPosts();
 	return posts.map((post) => ({
 		params: { slug: post.data.url },
 		props: { post },
@@ -20,15 +23,16 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, description, author, date, image } = post.data;
 const pageUrl = `/aktuality/${post.data.url}/`;
+const ogImage = image.url.src;
 ---
 
-<BaseLayout title={title} description={description} image={image.url} locale={defaultLocale}>
+<BaseLayout title={title} description={description} image={ogImage} locale={defaultLocale}>
 	<SeoSchemaArticle
 		slot="head"
 		pageUrl={pageUrl}
 		title={title}
 		description={description}
-		image={image.url}
+		image={ogImage}
 		date={date}
 		author={author}
 	/>

@@ -1,31 +1,28 @@
 ---
 import OptimizedImage from "@/components/OptimizedImage.astro";
 import SeoSchemaHome from "@/components/SeoSchemaHome.astro";
-import { site } from "@/config/site";
-import { defaultLocale } from "@/i18n/locales";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getPageByPermalink } from "@/lib/content";
-import ogLogo from "@/assets/images/og-logo.png";
 
-const page = await getPageByPermalink("", defaultLocale);
-if (!page) {
-	throw new Error("Missing home page content at src/content/pages/cs/domu.md");
-}
+import { site } from "@/config/site";
+
+import { defaultLocale } from "@/i18n/locales";
+
+import ogLogo from "@/assets/images/og-logo.png";
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description} locale={defaultLocale}>
+<BaseLayout
+	title="Efektivní weby na míru"
+	description="V Senoweb se specializujeme na tvorbu webových stránek na míru. Nepoužíváme koupené šablony, nástroje pro automatizované budování webů ani nástroje, které by váš web zahlcovali zbytečným kódem a tím vaší stránku zpomalovaly."
+	locale={defaultLocale}
+>
 	<SeoSchemaHome slot="head" pageUrl="/" image="/assets/images/og-logo.png" />
 
 	<section class="bg-background px-fluid-4-8 py-fluid-16-24">
 		<div class="container m-auto flex flex-col gap-8">
-			{
-				page.data.hero && (
-					<div class="flex flex-col gap-2">
-						{page.data.hero.topper && <p class="text-sm font-medium text-primary">{page.data.hero.topper}</p>}
-						{page.data.hero.heading && <h1 class="text-fluid-2xl-5xl font-semibold">{page.data.hero.heading}</h1>}
-					</div>
-				)
-			}
+			<div class="flex flex-col gap-2">
+				<p class="text-sm font-medium text-primary">Senoweb</p>
+				<h1 class="text-fluid-2xl-5xl font-semibold">Efektivní weby na míru</h1>
+			</div>
 			<OptimizedImage src={ogLogo} alt={`${site.name} logo`} class="max-w-md" priority />
 		</div>
 	</section>

@@ -52,14 +52,14 @@ Default locale is `cs` without URL prefix (`/o-nas/`, not `/cs/o-nas/`).
 1. Add the code to `locales` in `src/i18n/locales.ts` and `astro.config.mjs` `i18n.locales`.
 2. Create `src/content/pages/{locale}/` and `src/content/blog/{locale}/`.
 3. Add nav items in `src/components/Header/navigation.ts` and strings in `src/i18n/ui.ts`.
-4. Point Sveltia at the new blog folder (or add a collection) in `public/admin/config.yml`.
+4. Add the locale under `i18n.locales` in `public/admin/config.yml`.
 
 ## Sveltia CMS
 
 1. Open `/admin/` on the deployed site (or locally after configuring GitHub auth).
 2. Set `backend.repo` in `public/admin/config.yml` to your GitHub repository.
 3. Sign in with GitHub (PAT for solo use, or Netlify’s GitHub OAuth client when the site is on Netlify — **no Netlify Identity**).
-4. Blog posts land in `src/content/blog/cs/` and publish at `/aktuality/{url}/`.
+4. Blog posts land in `src/content/blog/cs/{{slug}}/index.md` (entry-relative images) and publish at `/aktuality/{url}/`.
 
 Docs: [Sveltia GitHub backend](https://sveltiacms.app/en/docs/backends/github)
 

@@ -1,13 +1,17 @@
 ---
-import { ThemeInitScript } from "@starwind-ui/astro/theme";
 import { Font } from "astro:assets";
 import { getRelativeLocaleUrl } from "astro:i18n";
 
+import { ThemeInitScript } from "@starwind-ui/astro/theme";
+
 import Footer from "@/components/Footer.astro";
-import Header from "@/components/Header/Header.astro";
+import Header from "@/components/Header.astro";
+
 import { site } from "@/config/site";
+
 import { defaultLocale, locales, type Locale } from "@/i18n/locales";
 import { t } from "@/i18n/ui";
+
 import "@/styles/global.css";
 
 interface Props {

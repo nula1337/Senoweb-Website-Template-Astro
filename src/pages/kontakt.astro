@@ -1,0 +1,95 @@
+---
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+import { Textarea } from "@/components/starwind/textarea";
+
+import Landing from "@/components/Landing.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import { defaultLocale } from "@/i18n/locales";
+import { t } from "@/i18n/ui";
+
+const formName = "Kontaktní formulář";
+
+const fields = [
+	{ type: "text" as const, name: "Jméno", autocomplete: "name", required: true },
+	{ type: "tel" as const, name: "Telefon", autocomplete: "tel", required: true },
+	{ type: "email" as const, name: "Email", autocomplete: "email", required: true },
+	{ type: "textarea" as const, name: "Zpráva", required: true },
+];
+---
+
+<BaseLayout
+	title="Kontakt"
+	description="V Senoweb se specializujeme na tvorbu webových stránek na míru. Napište nám — ozveme se co nejdříve."
+	locale={defaultLocale}
+>
+	<Landing
+		heading="Kontakt"
+		breadcrumbs={[
+			{ title: "Domů", url: "/" },
+			{ title: "Kontakt" },
+		]}
+	/>
+
+	<section class="px-fluid-4-8 py-fluid-16-24">
+		<div class="container m-auto max-w-2xl">
+			<form
+				class="flex flex-col gap-8"
+				method="POST"
+				action="/dekujeme/"
+				name={formName}
+				data-netlify="true"
+				netlify-honeypot="company"
+			>
+				<input type="hidden" name="form-name" value={formName} />
+				<input
+					class="sr-only"
+					type="search"
+					name="company"
+					tabindex={-1}
+					autocomplete="off"
+					spellcheck="false"
+					placeholder="Leave this empty"
+				/>
+
+				{
+					fields.map((field) => (
+						<div class="flex flex-col gap-2.5">
+							<Label>
+								{field.name}
+								{field.type === "textarea" ? (
+									<Textarea class="mt-2.5" name={field.name} rows={5} required={field.required} />
+								) : (
+									<Input
+										class="mt-2.5"
+										type={field.type}
+										name={field.name}
+										autocomplete={field.autocomplete}
+										required={field.required}
+									/>
+								)}
+							</Label>
+						</div>
+					))
+				}
+
+				<div class="flex flex-col gap-4">
+					<Button type="submit">Odeslat</Button>
+					<p class="text-center text-muted-foreground">
+						{t(defaultLocale, "form", "gdpr")}{" "}
+						<a
+							class="underline hover:text-foreground"
+							href="/gdpr/"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t(defaultLocale, "form", "gdprLink")}
+						</a>
+					</p>
+				</div>
+			</form>
+		</div>
+	</section>
+</BaseLayout>

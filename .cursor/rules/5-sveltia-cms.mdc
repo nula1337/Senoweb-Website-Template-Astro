@@ -1,0 +1,58 @@
+---
+description: Sveltia CMS config, admin UI, and content modeling (not Decap / Netlify CMS)
+globs: public/admin/**,src/content/**/*,src/content.config.ts
+alwaysApply: false
+---
+
+# Sveltia CMS
+
+Git-based headless CMS at `/admin/`. Config-compatible with Netlify/Decap CMS, but **this project uses Sveltia** — not Decap, not Netlify Identity / Git Gateway.
+
+## Official sources (do not invent options)
+
+Sveltia ships often and is pre-1.0. Never invent option names or claim features from memory — unrecognized options fail silently.
+
+- Schema (keep on `config.yml`): `# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json`
+- Docs index: https://sveltiacms.app/llms.txt
+- Full docs: https://sveltiacms.app/llms-full.txt (large; prefer a specific page)
+- Astro guide: https://sveltiacms.app/en/docs/frameworks/astro
+- AI / skills: https://sveltiacms.app/en/docs/working-with-ai
+
+Prefer the official `sveltia/ai-tools` skill over third-party Sveltia skills (often outdated).
+
+## Project paths
+
+| Role                       | Path                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| Admin page                 | `public/admin/index.html`                                                           |
+| Config                     | `public/admin/config.yml`                                                           |
+| Fallback media (non-entry) | `public/assets/cms` → top-level `media_folder` / `public_folder`                    |
+| Blog media                 | Entry-relative next to `index.md` (`path` + empty `media_folder` / `public_folder`) |
+| Blog collection            | `src/content/blog/cs/{{slug}}/index.md`                                             |
+| Content schema             | `src/content.config.ts` (`image()` for post cover photos)                           |
+
+Backend: GitHub (`backend.name: github`). Unsupported here: Azure DevOps, Bitbucket, Git Gateway.
+
+## Admin `index.html` rules
+
+Keep the page minimal — load only `https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js`.
+
+- Do **not** link `sveltia-cms.css` (there is none; styles are in the JS bundle).
+- Do **not** add `type="module"` on the script tag.
+- Do **not** wrap the page in an Astro/Tailwind layout (blank page / broken UI).
+- Do **not** add favicon, analytics, or extra markup.
+
+## Config & content rules
+
+1. After editing `config.yml`, validate via schema in the editor, then load `/admin/` and read the sign-in screen for runtime errors.
+2. Collection/file/field `name` values: unique in scope; no spaces, dots, or asterisks.
+3. Widgets: use Sveltia field types (`datetime` + `type: date`, not Netlify’s `date`). `markdown` ≡ `richtext`.
+4. Keep CMS fields in sync with `src/content.config.ts` (no frontmatter `locale`).
+5. Blog: `folder: src/content/blog` + `path: "{{slug}}/index"` + i18n `multiple_folders` / `locales: [cs]` → `src/content/blog/cs/{{slug}}/index.md`. Entry-relative images (`media_folder` / `public_folder`: `""`) so Astro `image()` optimizes them. Route slug from Compute `url`.
+6. URL: Compute `{{fields.title | slugify}}-{{uuid_shorter}}` + collection `slug: "{{url}}"` — not a manual string or bare UUID field.
+7. i18n: top-level + collection `i18n: true`; fields need `i18n: true` (translatable) or `i18n: duplicate` (shared).
+8. Slugs: `encoding: ascii`, `clean_accents: true`. Output: `omit_empty_optional_fields: true`.
+
+## Local check
+
+Run the site, open `/admin/`, confirm the login screen shows no config validation errors before calling a config change done.

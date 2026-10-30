@@ -1,0 +1,47 @@
+---
+import Landing from "@/components/Landing.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import { defaultLocale } from "@/i18n/locales";
+---
+
+<BaseLayout
+	title="Služby"
+	description="Přehled služeb Senoweb — tvorba webových stránek a webdesign na míru."
+	locale={defaultLocale}
+>
+	<Landing
+		heading="Služby"
+		breadcrumbs={[
+			{ title: "Domů", url: "/" },
+			{ title: "Služby" },
+		]}
+	/>
+
+	<section class="px-fluid-4-8 py-fluid-16-24">
+		<div class="container m-auto flex flex-col gap-fluid-4-8">
+			<hgroup class="flex flex-col gap-fluid-2-4">
+				<span class="topper">Služby</span>
+				<h2 class="text-fluid-2xl-5xl font-bold">Co nabízíme</h2>
+			</hgroup>
+			<ul class="grid grid-cols-1 gap-fluid-4-8 md:grid-cols-2">
+				<li class="flex flex-col gap-fluid-2-4">
+					<h3 class="text-fluid-lg-2xl font-semibold">
+						<a class="hover:underline" href="/sluzby/tvorba-webovych-stranek/">Tvorba webových stránek</a>
+					</h3>
+					<p class="text-muted-foreground">
+						Kompletní vývoj webu od struktury po nasazení. Zástupný popis — doplňte konkrétní nabídku.
+					</p>
+				</li>
+				<li class="flex flex-col gap-fluid-2-4">
+					<h3 class="text-fluid-lg-2xl font-semibold">
+						<a class="hover:underline" href="/sluzby/webdesign/">Webdesign</a>
+					</h3>
+					<p class="text-muted-foreground">
+						Návrh vizuální podoby a uživatelského rozhraní. Zástupný popis — doplňte konkrétní nabídku.
+					</p>
+				</li>
+			</ul>
+		</div>
+	</section>
+</BaseLayout>

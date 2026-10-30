@@ -1,0 +1,29 @@
+---
+description: Style Starwind triggers with ButtonVariants — no asChild + nested Button
+globs: src/**/*.astro
+alwaysApply: false
+---
+
+# Starwind Triggers — Button Styling
+
+When a Starwind trigger (`SheetTrigger`, `DialogTrigger`, `PopoverTrigger`, etc.) should look like a button, **do not** use `asChild` with a nested `<Button>`. Style the trigger itself with `ButtonVariants.button`.
+
+```astro
+import {ButtonVariants} from "@/components/starwind/button";
+
+<!-- ❌ BAD — asChild + separate Button -->
+<SheetTrigger asChild>
+	<Button variant="outline" size="icon-sm" aria-label="Menu">
+		<Menu />
+	</Button>
+</SheetTrigger>
+
+<!-- ✅ GOOD — ButtonVariants on the trigger -->
+<SheetTrigger class={ButtonVariants.button({ variant: "outline", size: "icon-sm" })} aria-label="Menu">
+	<Menu />
+</SheetTrigger>
+```
+
+- Import: `import { ButtonVariants } from "@/components/starwind/button";`
+- Pass `variant` / `size` (and extra classes via `tv` `class` if needed) into `ButtonVariants.button({ … })`.
+- Keep using `<Button>` for real buttons/links that are not Starwind triggers.

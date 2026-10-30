@@ -1,0 +1,36 @@
+---
+import { render } from "astro:content";
+
+import Landing from "@/components/Landing.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import { defaultLocale } from "@/i18n/locales";
+
+import { getPage } from "@/lib/content";
+
+const page = await getPage(defaultLocale, "gdpr");
+if (!page) {
+	throw new Error(`Missing pages entry: ${defaultLocale}/gdpr`);
+}
+
+const { Content } = await render(page);
+const { title, description, heading } = page.data;
+---
+
+<BaseLayout title={title} description={description} locale={defaultLocale}>
+	<Landing
+		heading={heading ?? title}
+		breadcrumbs={[
+			{ title: "Domů", url: "/" },
+			{ title },
+		]}
+	/>
+
+	<section class="px-fluid-4-8 py-fluid-16-24">
+		<div class="container m-auto flex max-w-3xl flex-col gap-fluid-4-8">
+			<div class="prose prose-neutral dark:prose-invert">
+				<Content />
+			</div>
+		</div>
+	</section>
+</BaseLayout>

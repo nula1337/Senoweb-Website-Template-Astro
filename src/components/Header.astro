@@ -1,12 +1,5 @@
 ---
-import Menu from "@tabler/icons/outline/menu-2.svg";
-
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/starwind/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/starwind/accordion";
 import { Button } from "@/components/starwind/button";
 import {
 	NavigationMenu,
@@ -17,18 +10,15 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/starwind/navigation-menu";
-import {
-	Sheet,
-	SheetContent,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/starwind/sheet";
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/starwind/sheet";
 import { ThemeToggle } from "@/components/starwind/theme-toggle";
+
+import Menu from "@tabler/icons/outline/menu-2.svg";
+
 import { defaultLocale, type Locale } from "@/i18n/locales";
 import { t } from "@/i18n/ui";
-import { getNav } from "./navigation";
+
+import { getNav } from "@/data/navigation";
 
 interface Props {
 	locale?: Locale;
@@ -103,11 +93,7 @@ function itemValue(url: string): string {
 
 						return (
 							<NavigationMenuItem>
-								<NavigationMenuLink
-									href={item.url}
-									active={isCurrent(item.url)}
-									class={navigationMenuTriggerStyle()}
-								>
+								<NavigationMenuLink href={item.url} active={isCurrent(item.url)} class={navigationMenuTriggerStyle()}>
 									{item.title}
 								</NavigationMenuLink>
 							</NavigationMenuItem>
@@ -192,9 +178,7 @@ function itemValue(url: string): string {
 									<a
 										class:list={[
 											"rounded-md px-3 py-2 text-sm font-medium",
-											isCurrent(item.url)
-												? "bg-muted"
-												: "text-muted-foreground hover:bg-muted hover:text-foreground",
+											isCurrent(item.url) ? "bg-muted" : "text-muted-foreground hover:bg-muted hover:text-foreground",
 										]}
 										href={item.url}
 										aria-current={isCurrent(item.url) ? "page" : undefined}

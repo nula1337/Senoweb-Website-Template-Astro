@@ -1,0 +1,33 @@
+---
+import Landing from "@/components/Landing.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+import { defaultLocale } from "@/i18n/locales";
+---
+
+<BaseLayout
+	title="O nás"
+	description="V Senoweb se specializujeme na tvorbu webových stránek na míru. Seznamte se s naším týmem a přístupem k práci."
+	locale={defaultLocale}
+>
+	<Landing
+		heading="O nás"
+		breadcrumbs={[
+			{ title: "Domů", url: "/" },
+			{ title: "O nás" },
+		]}
+	/>
+
+	<section class="px-fluid-4-8 py-fluid-16-24">
+		<div class="container m-auto flex flex-col gap-fluid-4-8">
+			<hgroup class="flex flex-col gap-fluid-2-4">
+				<span class="topper">O nás</span>
+				<h2 class="text-fluid-2xl-5xl font-bold">Kdo jsme</h2>
+			</hgroup>
+			<p class="max-w-3xl text-muted-foreground">
+				Jsme tým, který navrhuje a staví weby na míru — bez šablon a zbytečného kódu. Tato stránka
+				zatím obsahuje zástupný text; doplníte sem reálný příběh firmy.
+			</p>
+		</div>
+	</section>
+</BaseLayout>

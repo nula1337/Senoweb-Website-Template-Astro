@@ -4,12 +4,9 @@ url: "vitejte"
 description: "Ukázkový příspěvek šablony Senoweb Astro."
 author: "Senoweb"
 date: 2026-01-01
-locale: cs
 image:
-  url: "/assets/images/og-logo.png"
+  url: ./cover.png
   alt: "Senoweb logo"
-tags:
-  - blog
 ---
 
 Toto je ukázkový blogový příspěvek. Smažte ho nebo upravte přes Sveltia CMS na `/admin/`.

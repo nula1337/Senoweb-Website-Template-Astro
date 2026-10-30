@@ -1,19 +1,16 @@
-# Sveltia CMS — GitHub backend (no Netlify Identity / Git Gateway)
-# Docs: https://sveltiacms.app/en/docs/backends/github
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
 backend:
   name: github
-  repo: your-org/your-repo # TODO: replace with your GitHub repo
-  branch: main
-  # Optional: Netlify OAuth client still works without Identity when hosted on Netlify.
-  # For owner-only editing, sign in with a GitHub personal access token in the CMS UI.
+  repo: user/repo
+
+app_title: "Správa obsahu | Senoweb"
 
 logo:
   src: "https://www.senoweb.cz/assets/images/senoweb_og_logo_rounded.png"
   show_in_header: false
 
-locale: "cs"
-
-media_folder: "src/assets/cms"
+media_folder: "public/assets/cms"
 public_folder: "/assets/cms"
 
 slug:
@@ -21,48 +18,71 @@ slug:
   clean_accents: true
   sanitize_replacement: "-"
 
+i18n:
+  structure: "multiple_folders"
+  locales: ["cs"]
+  default_locale: "cs"
+
+output:
+  omit_empty_optional_fields: true
+
 collections:
-  - label: "Blog"
+  - label: "Aktuality"
     name: "blog"
-    folder: "src/content/blog/cs"
+    icon: article
+    folder: "src/content/blog"
+
+    # Entry-relative media so Astro `image()` can optimize (see Sveltia Astro guide: https://sveltiacms.app/en/docs/frameworks/astro#configuration)
+    path: "{{slug}}/index"
+    media_folder: ""
+    public_folder: ""
+
     create: true
-    slug: "{{year}}-{{month}}-{{day}}_{{slug}}"
-    summary: "{{ title }} [{{ date | date('DD. MM. YYYY') }}]"
+    delete: true
+    i18n: true
+    slug: "{{url}}"
+    summary: "**{{title}}** — {{date}}"
+    thumbnail: "image.url"
     editor:
       preview: true
+
     fields:
-      - { label: "Název", name: "title", widget: "string" }
+      - { label: "Název", name: "title", widget: "string", hint: "např. Novinky ze servisu", i18n: true }
       - {
-          label: "URL odkaz",
+          label: "URL",
           name: "url",
-          widget: "string",
-          hint: "Slug bez lomítek. Příspěvek bude na /aktuality/{slug}/.",
-          pattern:
-            [
-              "^[a-zà-ž0-9]+(?:-[a-zà-ž0-9]+)*$",
-              "Pouze písmena, číslice a pomlčky.",
-            ],
+          widget: "compute",
+          value: "{{fields.title | slugify}}-{{uuid_shorter}}",
+          hint: "Generuje se automaticky z názvu + unikátního ID",
+          i18n: duplicate,
         }
-      - {
-          label: "Popis",
-          name: "description",
-          widget: "string",
-          hint: "Kratší popis pro náhledy a SEO",
-        }
-      - { label: "Autor", name: "author", widget: "string" }
-      - { label: "Datum", name: "date", widget: "datetime" }
-      - { label: "Jazyk", name: "locale", widget: "hidden", default: "cs" }
+      - { label: "Popis", name: "description", widget: "string", hint: "Kratší popis pro náhledy a SEO", i18n: true }
+      - { label: "Autor", name: "author", widget: "string", hint: "např. Senoweb", i18n: duplicate }
+      - { label: "Datum", name: "date", widget: "datetime", i18n: duplicate }
+
       - label: "Náhledový obrázek"
         name: "image"
         widget: "object"
-        summary: "Obrázek - {{fields.alt}}"
+        i18n: duplicate
+        summary: "{{fields.alt}}"
+        hint: "Ukládá se vedle příspěvku (entry-relative) kvůli optimalizaci Astro."
         fields:
           - { label: "Obrázek", name: "url", widget: "image" }
-          - {
-              label: "Popis obrázku",
-              name: "alt",
-              widget: "string",
-              hint: "Popište, co je na obrázku (SEO / a11y).",
-            }
-      - { label: "Obsah", name: "body", widget: "markdown" }
-      - { label: "Štítky", name: "tags", widget: "hidden", default: ["blog"] }
+          - { label: "Popis obrázku", name: "alt", widget: "string", hint: "Popište, co je na obrázku (SEO / a11y)." }
+
+      - { label: "Obsah příspěvku", name: "body", widget: "markdown", i18n: true }
+
+  - label: "Stránky"
+    name: "pages"
+    icon: description
+    i18n: true
+    files:
+      - label: "GDPR"
+        name: "gdpr"
+        file: "src/content/pages/{{locale}}/gdpr.md"
+        i18n: true
+        fields:
+          - { label: "Titulek", name: "title", widget: "string", i18n: true }
+          - { label: "Popis", name: "description", widget: "string", i18n: true }
+          - { label: "Nadpis", name: "heading", widget: "string", i18n: true }
+          - { label: "Obsah", name: "body", widget: "markdown", i18n: true }

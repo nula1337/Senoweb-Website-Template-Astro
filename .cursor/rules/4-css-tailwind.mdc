@@ -1,8 +1,9 @@
 ---
-description: Protect fluid Tailwind tokens and CSS file ownership
-globs: src/styles/**/*.css
+description: Protect fluid Tailwind tokens, bare values over brackets, CSS file ownership, and Starwind color usage
+globs: src/styles/**/*.css,src/components/**/*.astro,src/layouts/**/*.astro,src/pages/**/*.astro
 alwaysApply: false
 ---
+
 # CSS & Tailwind Standards
 
 - **`src/styles/starwind.css`**: Starwind theme tokens only (brand `--primary` overrides OK).
@@ -10,3 +11,47 @@ alwaysApply: false
 - Do not overwrite `--fluid-min-width` or `--fluid-max-width` unless specifically requested.
 - Maintain existing `--fluid-bp` calculations for responsive scaling.
 - Layout imports **only** `global.css`.
+
+## Bare / canonical values over brackets (Tailwind v4)
+
+Prefer bare custom values (and spacing-scale forms) whenever Tailwind can express them without brackets. Unnecessary `[…]` triggers `suggestCanonicalClasses` warnings.
+
+Use brackets **only** for complex CSS syntax (multi-part values, `calc()`, `url()`, etc.). Prefer fluid tokens from `global.css` over raw px when spacing is involved.
+
+```html
+<!-- ❌ BAD — unnecessary brackets (warns) -->
+<div class="flex-[29] top-[117px]">…</div>
+
+<!-- ✅ GOOD — bare / canonical -->
+<div class="flex-29 top-29.25">…</div>
+
+<!-- ✅ OK — brackets needed (complex CSS) -->
+<div class="grid-cols-[1fr_500px_2fr] w-[calc(100%-2rem)] bg-[url('/hero.png')]">…</div>
+
+<!-- ✅ OK — CSS variable shorthand -->
+<div class="bg-(--my-brand)">…</div>
+```
+
+Ref: [Adding custom styles](https://tailwindcss.com/docs/adding-custom-styles) — bare values vs arbitrary `[…]` values.
+
+## Color tokens
+
+Prefer semantic classes mapped in `starwind.css` (`@theme inline` → `--color-*`) instead of raw palette colors with manual dark variants.
+
+```html
+<!-- ❌ BAD — hardcoded zinc + dark: -->
+<p class="text-zinc-700 dark:text-zinc-300">…</p>
+
+<!-- ✅ GOOD — token handles light/dark -->
+<p class="text-muted-foreground">…</p>
+
+<!-- ❌ BAD — paired token outside its context -->
+<div class="bg-primary-foreground">…</div>
+
+<!-- ✅ GOOD — literal white/black -->
+<div class="bg-white">…</div>
+```
+
+Useful tokens: `background`, `foreground`, `muted`, `muted-foreground`, `card`, `border`, `primary`, `secondary`, `accent`, `destructive`/`error`, etc.
+
+**Exception:** for straight white/black (not a themed surface), use `bg-white` / `bg-black` (or `text-white` / `text-black`). Do not use `*-primary-foreground` (or similar paired tokens) when you are not on a primary-colored element.

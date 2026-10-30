@@ -1,13 +1,47 @@
 ---
 description: Astro + Content Collections conventions
-globs: src/**/*.{astro,ts,md}
+globs: src/**/*.astro
 alwaysApply: false
 ---
+
 # Astro Conventions
 
 - Pages live in `src/pages/`. Content data lives in Content Collections (`src/content/`).
-- Site-wide identity → `src/config/site.ts`. Navigation → `src/components/Header/navigation.ts`.
+- Site-wide identity → `src/config/site.ts`. Navigation → `src/data/navigation.ts`.
 - Chrome copy → `t(locale, group, key)` from `src/i18n/ui.ts` (nested groups: `nav`, `form`, …).
 - Use `BaseLayout` for SEO meta, canonical, OG, Starwind `ThemeInitScript`.
 - Blog posts route to `/aktuality/[slug]/` from the `url` frontmatter field.
-- Sveltia edits `src/content/blog/cs/` — keep `locale: cs` on posts.
+- Sveltia edits `src/content/blog/cs/{{slug}}/index.md` with entry-relative images (Astro `image()`).
+- Query posts via `getBlogPosts()` from `src/lib/content.ts`.
+
+## Import grouping in `.astro` files
+
+Group imports logically by package / domain. Keep related imports adjacent; separate groups with a blank line.
+
+Typical order:
+
+1. Native Astro (`astro:assets`, `astro:content`, `astro:i18n`, `astro` types, …)
+2. External packages (`@starwind-ui/…`, `@tabler/icons/…`, …)
+3. Starwind UI components (`@/components/starwind/…`)
+4. Project modules by domain (local components/layouts → `@/config` → `@/i18n` → `@/data` → `@/lib` → assets/styles)
+
+```astro
+import { Font } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+import { ThemeInitScript } from "@starwind-ui/astro/theme";
+
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+
+import { site } from "@/config/site";
+
+import { defaultLocale, locales, type Locale } from "@/i18n/locales";
+import { t } from "@/i18n/ui";
+
+import "@/styles/global.css";
+```
+
+- Do not mix Astro natives, externals, Starwind, and project domains in one contiguous block.
+- Within a group, keep one import per module (multi-line named imports OK).
+- Skip groups that are unused in the file.
